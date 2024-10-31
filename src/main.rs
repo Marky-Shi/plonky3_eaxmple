@@ -9,7 +9,7 @@ use p3_challenger::DuplexChallenger;
 use p3_commit::ExtensionMmcs;
 use p3_dft::Radix2DitParallel;
 use p3_field::extension::BinomialExtensionField;
-use p3_field::{AbstractField, Field};
+use p3_field::Field;
 use p3_fri::{FriConfig, TwoAdicFriPcs};
 use p3_merkle_tree::MerkleTreeMmcs;
 use p3_poseidon2::{Poseidon2, Poseidon2ExternalMatrixGeneral};
@@ -45,8 +45,8 @@ fn main(){
         type Dft = Radix2DitParallel<Val>;
         type Pcs = TwoAdicFriPcs<Val, Dft, ValMmcs, ChallengeMmcs>;
         type MyConfig = StarkConfig<Pcs, Challenge, Challenger>;
-        
-        
+
+        // generate proof
         let perm = Perm::new_from_rng_128(
             Poseidon2ExternalMatrixGeneral,
             DiffusionMatrixBabyBear::default(),
@@ -70,14 +70,16 @@ fn main(){
         let pcs = Pcs::new(dft, val_mmcs, fri_config);
         let config = MyConfig::new(pcs);
         let mut challenger = Challenger::new(perm.clone());
-        let pis = vec![
-            BabyBear::from_canonical_u64(0),
-            BabyBear::from_canonical_u64(1),
-            BabyBear::from_canonical_u64(21),
-        ];
+        
+        // due to our ari struct cinfig. the public inputs but not used in this example
+        // let pis = vec![
+        //     BabyBear::from_canonical_u64(0),
+        //     BabyBear::from_canonical_u64(1),
+        //     BabyBear::from_canonical_u64(21),
+        // ];
         println!("start generating proof .... ");
-        let proof = prove(&config, &air, &mut challenger, trace, &pis);
+        let proof = prove(&config, &air, &mut challenger, trace, &vec![]);
         let mut challenger = Challenger::new(perm);
-        verify(&config, &air, &mut challenger, &proof, &pis).expect("verification failed");
+        verify(&config, &air, &mut challenger, &proof, &vec![]).expect("verification failed");
         println!("verify Success!");
 }
