@@ -57,8 +57,8 @@ fn main(){
         let val_mmcs = ValMmcs::new(hash, compress);
         let challenge_mmcs = ChallengeMmcs::new(val_mmcs.clone());
         let dft = Dft::default();
-        let num_steps = 8; // Choose the number of Fibonacci steps
-        let final_value = 21; // Choose the final Fibonacci value
+        let num_steps = 16; // Choose the number of Fibonacci steps
+        let final_value = 610; // Choose the final Fibonacci value
         let air = MyAir { num_steps, final_value };
         let trace = generate_air_trace::<Val>(num_steps);
         let fri_config = FriConfig {
